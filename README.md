@@ -1,33 +1,107 @@
-### Service App
+# ERPNext Service Management System
 
-Service Maintanance Management System
+This project was built as part of a Service Management assignment using ERPNext and the Frappe Framework.
 
-### Installation
+The goal was to create a simple system for managing service requests, technician visits, and ticket resolution.
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## What I Built
 
-```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app service_app
-```
+### Service Ticket
 
-### Contributing
+Used to register customer complaints and service requests.
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+Fields included:
 
-```bash
-cd apps/service_app
-pre-commit install
-```
+* Customer
+* Contact Person
+* Equipment Serial Number
+* Complaint Description
+* Priority
+* Status
+* Assigned Technician
+* SLA Due Date
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+### Service Visit
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+Used to record technician visits against a service ticket.
 
-### License
+Fields included:
 
-mit
+* Service Ticket
+* Technician
+* Visit Date
+* Start Time
+* End Time
+* Resolution Notes
+* Duration
+
+### Service Contract
+
+Created to store service contract information for customers.
+
+### Parts Used
+
+Implemented as a child table to track parts used during a service visit.
+
+## Workflow
+
+A workflow was created for Service Tickets with the following states:
+
+Open → Assigned → In Progress → Resolved → Closed
+
+This helps track the progress of a service request from creation to completion.
+
+## Automation Implemented
+
+A custom Python hook was added on Service Visit submission.
+
+When a Service Visit is submitted:
+
+* Duration is calculated from Start Time and End Time.
+* The linked Service Ticket status is automatically changed to Resolved.
+* A comment is added to the Service Ticket timeline.
+
+This logic is implemented in:
+
+service_app/service_app/events/service_visit.py
+
+## Report
+
+A report was created to view Service Tickets along with important information such as:
+
+* Customer
+* Priority
+* Status
+* Assigned Technician
+* SLA Due Date
+
+## Tech Stack
+
+* ERPNext v15
+* Frappe Framework v15
+* Python
+* MariaDB
+* Ubuntu (WSL)
+
+## What I Learned
+
+This was my first hands-on project with ERPNext/Frappe. Through this assignment I learned:
+
+* Creating custom DocTypes
+* Building workflows
+* Working with document events
+* Writing Frappe hooks
+* Creating reports
+* Managing ERP-style business processes
+
+## Demo
+
+The demo shows the following flow:
+
+1. Create a Service Ticket
+2. Assign a Technician
+3. Create a Service Visit
+4. Enter Start and End Time
+5. Submit the Visit
+6. Duration gets calculated automatically
+7. Service Ticket status changes to Resolved
